@@ -8,9 +8,9 @@ import Profile from "./screens/Profile";
 export default function App() {
   return (
     <View style={styles.container}>
-      {/*<Home/>*/}
-      <CreateEmployee /> 
-      {/* <Profile/> */}
+    <Home/>
+    {/* <CreateEmployee />*/}
+    {/*<Profile/>*/}
     </View>
   );
 }
@@ -18,7 +18,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#12a4e7',
+    backgroundColor: '#18e576',
     marginTop:Contants.statusBarHeight,
   },
 });
