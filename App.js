@@ -5,20 +5,35 @@ import Home from './screens/Home'
 import CreateEmployee from "./screens/CreateEmployee";
 import Profile from "./screens/Profile";
 
-export default function App() {
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack'
+const Stack = createStackNavigator();
+const myoptions ={
+    title:"My employees",
+    headerTintColor:"white",
+    headerStyle:{backgroundColor:"#006aff" }
+}
+function App() {
   return (
     <View style={styles.container}>
-    <Home/>
-    {/* <CreateEmployee />*/}
-    {/*<Profile/>*/}
+      <Stack.Navigator >
+        <Stack.Screen name="Home" component={Home} options={myoptions} />
+        <Stack.Screen name="Create Employee" component={CreateEmployee} options={{...myoptions,title:"Create employee"}} />
+        <Stack.Screen name="Profile" component={Profile} options={{...myoptions,title:"Profile"}} />
+      </Stack.Navigator>
     </View>
   );
 }
-
+export default () => {
+  return(
+      <NavigationContainer>
+        <App />
+      </NavigationContainer>
+  )
+}
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#18e576',
-    marginTop:Contants.statusBarHeight,
   },
 });

@@ -1,11 +1,20 @@
 import React from 'react';
-import { StyleSheet, Text , View , Image } from 'react-native';
+import { StyleSheet, Text , View , Image, Linking , Platform} from 'react-native';
 import { LinearGradient }  from 'expo-linear-gradient';
 import { Title , Card , Button} from "react-native-paper";
 import { MaterialIcons , Entypo } from '@expo/vector-icons';
 
 
-const Profile  = () =>{
+const Profile  = (props) =>{
+
+    const {id,name,picture,phone,email,salary,position} = props.route.params.item;
+    const openDial =()=>{
+        if(Platform.OS === "android"){
+            Linking.openURL("tel:8988143226")
+        }else {
+            Linking.openURL("telprompt:8988143226")
+        }
+    }
     return(
         <View style={styles.root}>
             <LinearGradient
@@ -15,33 +24,40 @@ const Profile  = () =>{
             <View style={{alignItems:"center"}}>
                 <Image
                     style={{width:140,height:140,borderRadius:70,marginTop:-50}}
-                    source={{uri:"https://images.unsplash.com/photo-1549068106-b024baf5062d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=634&q=80"}}
+                    source={{uri:picture}}
                 />
             </View>
-            <View style={{alignItems:"center"}}>
-                <Title>Abhav Thakur</Title>
-                <Text style={{fontSize:18}}>Web developer</Text>
+            <View style={{alignItems:"center" ,margin:18}}>
+                <Title>{name}</Title>
+                <Text style={{fontSize:18}}>{position}</Text>
             </View>
-            <Card style={styles.mycard}>
+            <Card style={styles.mycard} onPress={ ()=>{
+                Linking.openURL("mailto:abhav.thakur25@gmail.com")
+            }} >
                 <View style={styles.cardcontent}>
                     <MaterialIcons name="email" size={32} color="#006aff" />
-                    <Text style={styles.mytext}>abhav.thakur25@gmail.com</Text>
+                    <Text style={styles.mytext}>{email}</Text>
                 </View>
             </Card>
-            <Card style={styles.mycard}>
+            <Card style={styles.mycard} onPress ={()=>openDial()}  >
                 <View style={styles.cardcontent}>
                     <Entypo name="phone" size={32} color="#006aff" />
-                    <Text style={styles.mytext}>8988143226</Text>
+                    <Text style={styles.mytext}>{phone}</Text>
                 </View>
             </Card>
             <Card style={styles.mycard}>
                 <View style={styles.cardcontent}>
                     <MaterialIcons name="attach-money" size={32} color="#006aff" />
-                    <Text style={styles.mytext}>8 lac.</Text>
+                    <Text style={styles.mytext}>{salary}</Text>
                 </View>
             </Card>
-            <View style={{flexDirection:"row",justifyContent:"space-around"}}>
-                
+            <View style={{flexDirection:"row",justifyContent:"space-around", padding:10}}>
+                <Button icon="account-edit" mode="contained" theme={theme} onPress={() => console.log('Pressed')}>
+                    Edit
+                </Button>
+                <Button icon="account-remove" mode="contained" onPress={() => console.log('Pressed')}>
+                    Fire employee
+                </Button>
             </View>
 
         </View>
@@ -65,6 +81,11 @@ const styles = StyleSheet.create({
         marginLeft:5
     }
 })
+const theme = {
+    colors:{
+        primary:"#006aff"
+    }
+}
 
 
 export default Profile
