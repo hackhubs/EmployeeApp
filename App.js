@@ -17,7 +17,7 @@ function App() {
   return (
     <View style={styles.container}>
       <Stack.Navigator >
-        <Stack.Screen name="Home" component={Home} options={myoptions} />
+        <Stack.Screen name="Home" component={Home} options={{...myoptions,title: "Home page"}} />
         <Stack.Screen name="Create Employee" component={CreateEmployee} options={{...myoptions,title:"Create employee"}} />
         <Stack.Screen name="Profile" component={Profile} options={{...myoptions,title:"Profile"}} />
       </Stack.Navigator>

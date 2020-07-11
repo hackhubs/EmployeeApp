@@ -7,7 +7,7 @@ import { MaterialIcons , Entypo } from '@expo/vector-icons';
 
 const Profile  = (props) =>{
 
-    const {id,name,picture,phone,email,salary,position} = props.route.params.item;
+    const {_id,name,picture,phone,email,salary,position} = props.route.params.item;
     const openDial =()=>{
         if(Platform.OS === "android"){
             Linking.openURL("tel:8988143226")

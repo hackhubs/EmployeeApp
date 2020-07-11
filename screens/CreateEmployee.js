@@ -1,19 +1,46 @@
 import React,{useState} from 'react';
-import { StyleSheet, Text, View, Modal } from 'react-native';
+import { StyleSheet, Text, View, Modal , Alert , KeyboardAvoidingView } from 'react-native';
 import {TextInput, Button} from "react-native-paper";
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
-import {Alert} from "react-native-web";
+
 
 
 const CreateEmployee = ()=>{
-    const [Name, setName] = useState("")
+    const [name, setName] = useState("")
     const [phone, setPhone] = useState("")
     const [email, setEmail] = useState("")
     const [salary, setSalary] = useState("")
     const [picture, setPicture]= useState("")
+    const [position, setPosition]= useState("")
     const [modal,setModal]=useState(false)
+
+    const submitData = ()=>{
+        fetch("http://bcaa62038078.ngrok.io/send-data",{
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name,
+                email,
+                phone,
+                salary,
+                picture,
+                position
+            })
+        })
+        .then(res=>res.json())
+        .then(data=>{
+            Alert.alert(`${data.name} is saved successfuly`)
+            navigation.navigate("Home")
+        })
+        .catch(err=>{
+            Alert.alert("someting went wrong")
+        })
+
+    }
 
     const pickFromGallery = async ()=>{
         const {granted} = await Permissions.askAsync(Permissions.CAMERA_ROLL)
@@ -73,10 +100,11 @@ const CreateEmployee = ()=>{
 
     return (
         <View style={styles.root}>
+        <KeyboardAvoidingView>
             <TextInput
                 label='Name'
                 style={styles.inputStyle}
-                value={Name}
+                value={name}
                 theme={theme}
                 mode="outlined"
                 onChangeText={text => setName(text)}
@@ -106,16 +134,21 @@ const CreateEmployee = ()=>{
                 mode="outlined"
                 onChangeText={text => setSalary(text)}
             />
+            <TextInput
+                label='position'
+                style={styles.inputStyle}
+                value={position}
+                theme={theme}
+                mode="outlined"
+                onChangeText={text => setPosition(text)}
+            />
             <Button  style={styles.inputStyle} icon={picture==""?"upload":"check"} mode="contained" onPress={() => setModal(true)}>
                 Upload
             </Button>
-            <Button  style={styles.inputStyle} icon="content-save" mode="contained" onPress={() => console.log("saved")}>
+            <Button  style={styles.inputStyle} icon="content-save" mode="contained" onPress={() => submitData()}>
                 Save
             </Button>
-            <Modal
-            animationType="slide"
-            transparent={true}
-            visible={modal}
+            <Modal animationType="slide" transparent={true} visible={modal}
             onRequestClose={()=>{
                 setModal(false)
             }}
@@ -134,6 +167,7 @@ const CreateEmployee = ()=>{
                  </Button>
              </View>
             </Modal>
+            </KeyboardAvoidingView>
         </View>
     )
 
