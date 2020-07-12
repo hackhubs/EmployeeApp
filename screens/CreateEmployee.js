@@ -7,17 +7,39 @@ import * as Permissions from 'expo-permissions';
 
 
 
-const CreateEmployee = ()=>{
-    const [name, setName] = useState("")
-    const [phone, setPhone] = useState("")
-    const [email, setEmail] = useState("")
-    const [salary, setSalary] = useState("")
-    const [picture, setPicture]= useState("")
-    const [position, setPosition]= useState("")
+const CreateEmployee = ({navigation,route})=>{
+
+    const getDetails = (type) =>{
+        if(route.params){
+            switch (type) {
+                case "name":
+                    return route.params.name
+                case "phone":
+                    return route.params.phone
+                case "email":
+                    return route.params.email
+                case "salary":
+                    return route.params.salary
+                case "picture":
+                    return route.params.picture
+                case "position":
+                    return route.params.position
+
+            }
+        }
+        return ""
+    }
+
+    const [name, setName] = useState(getDetails("name"))
+    const [phone, setPhone] = useState(getDetails("phone"))
+    const [email, setEmail] = useState(getDetails("email"))
+    const [salary, setSalary] = useState(getDetails("salary"))
+    const [picture, setPicture]= useState(getDetails("picture"))
+    const [position, setPosition]= useState(getDetails("position"))
     const [modal,setModal]=useState(false)
 
     const submitData = ()=>{
-        fetch("http://bcaa62038078.ngrok.io/send-data",{
+        fetch("http://e01544525bab.ngrok.io/send-data",{
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'
@@ -34,11 +56,37 @@ const CreateEmployee = ()=>{
         .then(res=>res.json())
         .then(data=>{
             Alert.alert(`${data.name} is saved successfuly`)
-            navigation.navigate("Home")
+            this.props.navigation.navigate("Home")
         })
         .catch(err=>{
             Alert.alert("someting went wrong")
         })
+
+    }
+    const updateDetails = () => {
+        fetch("http://e01544525bab.ngrok.io/update",{
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                id : route.params._id,
+                name,
+                email,
+                phone,
+                salary,
+                picture,
+                position
+            })
+        })
+            .then(res=>res.json())
+            .then(data=>{
+                Alert.alert(`${data.name} is updated successfuly`)
+                this.props.navigation.navigate("Home")
+            })
+            .catch(err=>{
+                Alert.alert("someting went wrong")
+            })
 
     }
 
@@ -95,6 +143,8 @@ const CreateEmployee = ()=>{
         }).then(res=>res.json()).then(data=>{
             setPicture(data.url)
             setModal(false)
+        }).catch(error =>{
+            Alert.alert("error while uploading photo")
         })
     }
 
@@ -145,9 +195,16 @@ const CreateEmployee = ()=>{
             <Button  style={styles.inputStyle} icon={picture==""?"upload":"check"} mode="contained" onPress={() => setModal(true)}>
                 Upload
             </Button>
+            { route.params ?
+                <Button  style={styles.inputStyle} icon="content-save" mode="contained" onPress={() => updateDetails()}>
+                    updateDetails
+                </Button>
+                :
             <Button  style={styles.inputStyle} icon="content-save" mode="contained" onPress={() => submitData()}>
                 Save
             </Button>
+            }
+
             <Modal animationType="slide" transparent={true} visible={modal}
             onRequestClose={()=>{
                 setModal(false)

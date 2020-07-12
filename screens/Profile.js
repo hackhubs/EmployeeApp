@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text , View , Image, Linking , Platform} from 'react-native';
+import { StyleSheet, Text , View , Image, Linking , Platform , Alert} from 'react-native';
 import { LinearGradient }  from 'expo-linear-gradient';
 import { Title , Card , Button} from "react-native-paper";
 import { MaterialIcons , Entypo } from '@expo/vector-icons';
@@ -8,11 +8,30 @@ import { MaterialIcons , Entypo } from '@expo/vector-icons';
 const Profile  = (props) =>{
 
     const {_id,name,picture,phone,email,salary,position} = props.route.params.item;
+
+    const deleteEmployee = () => {
+        fetch("http://e01544525bab.ngrok.io/delete",{
+            method : "post",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                id: _id
+            })
+        })
+        .then( res => res.json())
+        .then(deleteEmp =>{
+            Alert.alert(`${deleteEmp.name} is deleted`)
+            props.navigation.navigate("Home")
+        }).catch(error =>{
+            Alert.alert("something went wrong")
+        })
+    }
     const openDial =()=>{
         if(Platform.OS === "android"){
-            Linking.openURL("tel:8988143226")
+            Linking.openURL(`tel:${phone}`)
         }else {
-            Linking.openURL("telprompt:8988143226")
+            Linking.openURL(`telprompt:${phone}`)
         }
     }
     return(
@@ -32,7 +51,7 @@ const Profile  = (props) =>{
                 <Text style={{fontSize:18}}>{position}</Text>
             </View>
             <Card style={styles.mycard} onPress={ ()=>{
-                Linking.openURL("mailto:abhav.thakur25@gmail.com")
+                Linking.openURL(`mailto:${email}`)
             }} >
                 <View style={styles.cardcontent}>
                     <MaterialIcons name="email" size={32} color="#006aff" />
@@ -52,10 +71,12 @@ const Profile  = (props) =>{
                 </View>
             </Card>
             <View style={{flexDirection:"row",justifyContent:"space-around", padding:10}}>
-                <Button icon="account-edit" mode="contained" theme={theme} onPress={() => console.log('Pressed')}>
+                <Button icon="account-edit" mode="contained" theme={theme} onPress={() => {
+                    props.navigation.navigate("Create Employee",{ _id,name,picture,phone,email,salary,position})
+                }}>
                     Edit
                 </Button>
-                <Button icon="account-remove" mode="contained" onPress={() => console.log('Pressed')}>
+                <Button icon="account-remove" mode="contained" onPress={() => deleteEmployee()}>
                     Fire employee
                 </Button>
             </View>
